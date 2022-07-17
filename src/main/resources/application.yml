@@ -6,9 +6,9 @@ spring:
     name: SearchService
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ushopdb?useSSL=FALSE&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=UTC
-    username: root
-    password: root
+    url: jdbc:mysql://dev-instance-db-1.cpae2i8tmjoo.ap-northeast-2.rds.amazonaws.com:3306/productdb?useSSL=FALSE&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: admin
+    password: 12345678
   jpa:
     hibernate:
       ddl-auto: none
