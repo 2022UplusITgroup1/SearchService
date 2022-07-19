@@ -17,11 +17,19 @@ public class TypoCorrectService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public TypoCorrectResponseDto getCorrectString(String query){
+    public TypoCorrectResponseDto getTypoCorrectString(String query){
         TypoCorrectResponseDto typoCorrectResponseDto =typoCorrectClient.getCorrectString(query);
 
 
         return typoCorrectResponseDto;
+    }
+
+    public String getSearchString(String query){
+        String searchString=query;
+
+
+
+        return searchString;
     }
 
 }
