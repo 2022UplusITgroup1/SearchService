@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.uplus.searchservice.dto.TypoCorrectResponseDto;
+import com.uplus.searchservice.dto.response.TypoCorrectResponseDto;
 import com.uplus.searchservice.feignclient.info.FeignClientConfiguration;
 import com.uplus.searchservice.feignclient.info.TypoCorrectInfo;
 
@@ -14,4 +14,6 @@ public interface TypoCorrectClient {
     
     @GetMapping
     TypoCorrectResponseDto getCorrectString(@RequestParam(value = "query") String query);
+
+
 }

@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.uplus.searchservice.dto.TypoCorrectResponseDto;
+import com.uplus.searchservice.dto.response.TypoCorrectResponseDto;
 import com.uplus.searchservice.feignclient.TypoCorrectClient;
 
 import lombok.RequiredArgsConstructor;

@@ -51,10 +51,11 @@ public class HibernateSearchService {
         logger.info("fullTextEntityManager after");
 
         QueryBuilder queryBuilder= fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(WordDictionary.class).get();
-
+        
+        //dsl
         Query query = queryBuilder.keyword().wildcard().onField("wrongWord").matching(keyword).createQuery();
 
-
+        
         logger.info("queryBuilder query : "+query.toString());
         FullTextQuery fullTextQuery = fullTextEntityManager.createFullTextQuery(query, WordDictionary.class);
 

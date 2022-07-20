@@ -1,4 +1,4 @@
-package com.uplus.searchservice.dto;
+package com.uplus.searchservice.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
