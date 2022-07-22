@@ -98,7 +98,7 @@ public class SearchService {
             if(ascii == 32) continue;
 
             // 이전과 다른 유형의 char 일 경우, 공백 추가 (맨 처음은 제외)
-            if(prev != 0 && prev != findType(ascii)) ans.add(" ");
+            if(prev != 0 && findType(ascii) != 0 && prev != findType(ascii)) ans.add(" ");
             prev = findType(ascii);
 
             // ㄱ(12593) ~ ㅎ(12622)
