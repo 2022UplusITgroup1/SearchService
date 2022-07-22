@@ -47,6 +47,7 @@ public class SearchController {
 
 
         List<String> searchKeywordList=new ArrayList<String>();
+        
         for(String str : convertedKeyword){
             //단어 길이 2이상일때만 redis searching
             if(str.length()>1){
