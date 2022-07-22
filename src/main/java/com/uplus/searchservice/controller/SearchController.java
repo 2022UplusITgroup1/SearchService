@@ -1,5 +1,6 @@
 package com.uplus.searchservice.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -30,16 +31,63 @@ public class SearchController {
         logger.info("search query : " + query);
 
         /**
-         * case 1. redis cache에서 검색
-         * case 2. 검색하지 못한 단어는 내부 오타 수정 알고리즘 적용
+         * case 1. query 파싱 후
+         * case 2. redis cache에서 검색
+         * case 3. 검색하지 못한 단어는 내부 오타 수정 알고리즘 적용
+         * => 
+         * 
          */
-        String searchKeyword = searchService.getCorrectWordInDictionary(query);
-        if (searchKeyword == null) {
-            /**
-             * 오타 수정 알고리즘 적용
-             */
+
+
+
+        /*
+         * query 파싱
+         */
+        List<String> convertedKeyword=searchService.getConvertWord(query);
+
+
+        List<String> searchKeywordList=new ArrayList<String>();
+        for(String str : convertedKeyword){
+            //단어 길이 2이상일때만 redis searching
+            if(str.length()>1){
+                //redis 캐시 searching
+                String redisKeyword = searchService.getCorrectWordInDictionary(str);
+
+                if (redisKeyword == null) {
+
+                    /**
+                     * 오타 수정 알고리즘 적용
+                     */
+
+                    //임시
+                    redisKeyword=str;
+
+                }
+
+                searchKeywordList.add(redisKeyword);
+
+            }else{
+                searchKeywordList.add(str);
+            }
 
         }
+
+
+        String searchKeyword = String.join(" ", searchKeywordList);
+
+
+        // String searchKeyword = searchService.getCorrectWordInDictionary(query);
+
+        // if (searchKeyword == null) {
+        //     /**
+        //      * 오타 수정 알고리즘 적용
+        //      */
+        //     // List<String> convertedKeyword=searchService.getConvertWord(query);
+        //     // searchKeyword=String.join(" ", convertedKeyword);
+
+        // }
+
+        logger.info("converted keyword : " + searchKeyword);
 
         logger.info("search keyword : " + searchKeyword);
         List<PhoneDto> searchPhoneList = searchService.getSearchList(searchKeyword);
