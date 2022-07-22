@@ -7,31 +7,32 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import lombok.Getter;
 
 @Entity
-@Indexed
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Table(name="dictionary")
-public class WordDictionary {
-    
+public class Dictionary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @JsonIgnore
     private Integer id;
 
-
+    @NotNull
     @Column(name = "wrong_word")
-    @Field
     private String wrongWord;
 
-
-
+    @NotNull
     @Column(name = "correct_Word")
     private String correctWord;
 

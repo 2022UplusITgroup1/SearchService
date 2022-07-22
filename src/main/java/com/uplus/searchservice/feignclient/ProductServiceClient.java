@@ -8,8 +8,6 @@ import com.uplus.searchservice.dto.response.SearchResponseDto;
 
 @FeignClient("productservice")
 public interface ProductServiceClient {
-
     @GetMapping("/product/search")
-    SearchResponseDto getSearchProduct(@RequestParam(value = "ph_name") String query);
-    
+    SearchResponseDto getSearchProducts(@RequestParam(value = "word") String keyword);
 }
