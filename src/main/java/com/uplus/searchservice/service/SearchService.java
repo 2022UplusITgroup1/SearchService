@@ -1,6 +1,9 @@
 package com.uplus.searchservice.service;
 
 import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.uplus.searchservice.controller.message.StatusMessage;
 import com.uplus.searchservice.entity.Dictionary;
@@ -39,6 +42,88 @@ public class SearchService {
 
         return valueOperations.get(key);
     }
+
+    /**
+     * 사전(dictionary)에 검색가능하도록 변환 - JSH
+     */
+    // char 유형에 맞는 type return
+    public static int findType(int ascii) {
+        if(ascii >= 44032) {
+            // 한글 단어일 경우 - 1
+            return 1;
+        } else if(ascii > 47 && ascii < 58) {
+            // 숫자일 경우 - 2
+            return 2;
+        } else if((ascii > 64 && ascii < 91) || (ascii > 96 && ascii < 123)) {
+            // 영단어일 경우 (대문자 & 소문자) - 3
+            return 3;
+        } else if(ascii > 12592) {
+            // 한글 자음일 경우 - 4
+            return 4;
+        } else {
+            // 그 외 문자
+            return 0;
+        }
+    }
+    public List<String> getConvertWord(String keyword) {
+        // 한글 자음 - 영어 해시맵
+        HashMap<String, String> consonants = new HashMap<String, String>();
+        consonants.put("ㄱ", "R");
+        consonants.put("ㄲ", "R");
+        consonants.put("ㄴ", "S");
+        consonants.put("ㄷ", "E");
+        consonants.put("ㄸ", "E");
+        consonants.put("ㄹ", "F");
+        consonants.put("ㅁ", "A");
+        consonants.put("ㅂ", "Q");
+        consonants.put("ㅃ", "Q");
+        consonants.put("ㅅ", "T");
+        consonants.put("ㅈ", "W");
+        consonants.put("ㅉ", "W");
+        consonants.put("ㅊ", "C");
+        consonants.put("ㅋ", "Z");
+        consonants.put("ㅌ", "X");
+        consonants.put("ㅍ", "B");
+        consonants.put("ㅎ", "G");
+
+        // 변환 결과 저장 List
+        List ans = new ArrayList();
+
+        int prev = 0;
+        for(int i=0;i<keyword.length();i++) {
+            char ch = keyword.charAt(i);
+            int ascii = (int)ch;
+
+            // 공백은 continue
+            if(ascii == 32) continue;
+
+            // 이전과 다른 유형의 char 일 경우, 공백 추가 (맨 처음은 제외)
+            if(prev != 0 && prev != findType(ascii)) ans.add(" ");
+            prev = findType(ascii);
+
+            // ㄱ(12593) ~ ㅎ(12622)
+            if(ascii > 12592 && ascii < 12623) {
+                // 한글 자음일 경우 Hashmap 값 가져오기
+                ans.add(consonants.get(Character.toString(ch)));
+            } else {
+                ans.add(ch);
+            }
+        }
+
+        // List To String
+        StringBuilder sb = new StringBuilder(keyword.length());
+        for (int i=0;i<ans.size();i++) {
+            sb.append(ans.get(i));
+        }
+        String res = sb.toString();
+
+        // String Split -> List
+        List<String> convertWordList = Arrays.asList(res.split(" "));
+
+        return convertWordList;
+    }
+
+
 
     /**
      * 데이터베이스에서 올바른 단어 검색

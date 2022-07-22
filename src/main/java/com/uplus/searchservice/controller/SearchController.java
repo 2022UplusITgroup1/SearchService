@@ -38,6 +38,7 @@ public class SearchController {
             /**
              * 오타 수정 알고리즘 적용
              */
+            // searchKeyword=searchService.getConvertWord();
 
         }
 
