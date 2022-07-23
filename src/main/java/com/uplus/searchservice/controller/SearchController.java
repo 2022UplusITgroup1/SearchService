@@ -27,30 +27,38 @@ public class SearchController {
 
     @GetMapping
     public ResponseMessage getProductBySearch(@RequestParam("query") String query) {
-        logger.info("search query : " + query);
-
         /**
-         * case 1. redis cache에서 검색
-         * case 2. 검색하지 못한 단어는 내부 오타 수정 알고리즘 적용
+         * case 1. query 파싱 후
+         * case 2. DB검색 - redis에 cache됨
+         *
          */
-        String searchKeyword = searchService.getCorrectWordInDictionary(query);
-        if (searchKeyword == null) {
-            /**
-             * 오타 수정 알고리즘 적용
-             */
 
+        if (query.isEmpty())
+            return ResponseMessage.res(StatusCode.NO_CONTENT, StatusMessage.NOT_FOUND_SEARCH_PRODUCT);
+        /*
+         * query 파싱
+         */
+        List<String> convertedWords = searchService.getConvertWord(query);
+
+        List<String> keywordList = convertedWords;
+        int idx = 0;
+        for(String converts : convertedWords){
+            //단어 길이 2이상일때만 검색
+            if(converts.length() > 1){
+                Dictionary dictionaryWord = searchService.getCorrectWordInDB(converts);
+                if (dictionaryWord != null)
+                    keywordList.set(idx, dictionaryWord.getCorrectWord());
+            }
+            idx++;
         }
 
-        logger.info("search keyword : " + searchKeyword);
-        List<PhoneDto> searchPhoneList = searchService.getSearchList(searchKeyword);
+        String keyword = String.join(" ", keywordList);
+
+        logger.debug("search query[" + query + "] -> keyword [" + keyword + "]");
+        List<PhoneDto> searchPhoneList = searchService.getSearchList(keyword);
         if (searchPhoneList.isEmpty())
             return ResponseMessage.res(StatusCode.NO_CONTENT, StatusMessage.NOT_FOUND_SEARCH_PRODUCT);
 
-        if (query != searchKeyword) {
-            // 오타 수정된 키워드이기 때문에 데이터베이스에 저장
-            Dictionary dictionary = Dictionary.builder().wrongWord(query).correctWord(searchKeyword).build();
-            searchService.updateWordDictionary(dictionary);
-        }
         return ResponseMessage.res(StatusCode.OK, StatusMessage.SUCCESS_FOUND_SEARCH_PRODUCT, searchPhoneList);
     }
 }

@@ -1,11 +1,22 @@
 version: '3.3'
 
 services:
+        redis:
+                container_name: redis
+                image: redis:latest
+                restart: always
+                ports:
+                        - 6379:6379
+                command: [ "redis-server", "--protected-mode", "no", "--bind", "0.0.0.0" ]
+                environment:
+                        - ALLOW_EMPTY_PASSWORD=yes
         app:
                 container_name: searchservice_v1
                 build:
                         context: .
                         dockerfile: Dockerfile
+                depends_on:
+                        - redis
                 restart: always
                 ports:
                         - "44421:44421"
