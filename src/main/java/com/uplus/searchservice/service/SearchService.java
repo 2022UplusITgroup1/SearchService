@@ -10,6 +10,7 @@ import com.uplus.searchservice.entity.Dictionary;
 import com.uplus.searchservice.exception.NoAvailableItemException;
 import com.uplus.searchservice.repository.DictionaryRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,8 @@ public class SearchService {
     /**
      * 사전(dictionary)에 오타 수정 된 케이스가 있는지 확인
      */
+
+    @Deprecated
     public String getCorrectWordInDictionary(String keyword) {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         String key = REDIS_PREFIX_KEY + "::" + keyword;
@@ -123,12 +126,11 @@ public class SearchService {
         return convertWordList;
     }
 
-
-
     /**
-     * 데이터베이스에서 올바른 단어 검색
+     * 데이터베이스에서 올바른 단어 검색 - 결과가 null이 아닐 경우 redis에 캐싱
      */
-    public Dictionary getCorrentWordInDB(String keyword) {
+    @Cacheable(value = "dictionary", key = "#keyword", unless="#result == null")
+    public Dictionary getCorrectWordInDB(String keyword) {
         return dictionaryRepository.findByWrongWord(keyword).orElse(null);
     }
 
@@ -147,6 +149,7 @@ public class SearchService {
     /**
      * 오타 수정 된 검색어 데이터베이스에 추가하기
      */
+    @Deprecated
     @Transactional
     public Dictionary updateWordDictionary(Dictionary dictionary) {
         Dictionary savedDictionary = null;
@@ -159,7 +162,4 @@ public class SearchService {
         }
         return savedDictionary;
     }
-    /**
-     * 오타 수정 알고리즘
-     */
 }
