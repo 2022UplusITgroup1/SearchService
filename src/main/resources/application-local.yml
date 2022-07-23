@@ -1,9 +1,13 @@
+logging:
+  level:
+    root: debug
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://dev-instance-db-1.cpae2i8tmjoo.ap-northeast-2.rds.amazonaws.com:3306/searchdb?useSSL=FALSE&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=UTC
-    username: admin
-    password: 12345678
+    url: jdbc:mysql://localhost:3306/searchdb?useSSL=FALSE&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: root
   jpa:
     hibernate:
       ddl-auto: none
@@ -11,6 +15,8 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+  cache:
+    type: redis
   redis:
     host: localhost
     port: 6379
@@ -28,4 +34,4 @@ eureka:
       defaultZone: http://localhost:8761/eureka
 
 prefix:
-  key: search
+  key: dictionary
