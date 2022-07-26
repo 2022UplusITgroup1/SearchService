@@ -82,6 +82,7 @@ public class SearchService {
         consonants.put("ㅁ", "A");
         consonants.put("ㅂ", "Q");
         consonants.put("ㅃ", "Q");
+        consonants.put("ㅇ", "D");
         consonants.put("ㅅ", "T");
         consonants.put("ㅈ", "W");
         consonants.put("ㅉ", "W");
