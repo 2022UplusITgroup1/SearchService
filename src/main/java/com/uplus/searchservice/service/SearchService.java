@@ -57,14 +57,34 @@ public class SearchService {
         } else if((ascii > 64 && ascii < 91) || (ascii > 96 && ascii < 123)) {
             // 영단어일 경우 (대문자 & 소문자) - 3
             return 3;
-        } else if(ascii > 12592) {
+        } else if(ascii > 12592 && ascii < 12623) {
             // 한글 자음일 경우 - 4
             return 4;
+        } else if(ascii > 12623 && ascii < 12644) {
+            // 한글 모음일 경우 - 5
+            return 5;
         } else {
             // 그 외 문자
             return 0;
         }
     }
+
+    // 한글 자음/모음이 포함되어 있는지 확인 => 포함되어있으면 그대로(true) / 아닌 경우 getConverWord로(false)
+    public Boolean checkWord(String keyword) {
+        for(int i=0;i<keyword.length();i++) {
+            char ch = keyword.charAt(i);
+            int ascii = (int)ch;
+            int nowType = findType(ascii);
+
+            if(nowType == 4 || nowType == 5) {
+                // 한글 자음/모음이 포함된 경우
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public List<String> getConvertWord(String keyword) {
         // 한글 자음 - 영어 해시맵
         HashMap<String, String> consonants = new HashMap<String, String>();
@@ -78,6 +98,7 @@ public class SearchService {
         consonants.put("ㅂ", "Q");
         consonants.put("ㅃ", "Q");
         consonants.put("ㅅ", "T");
+        consonants.put("ㅇ", "D");
         consonants.put("ㅈ", "W");
         consonants.put("ㅉ", "W");
         consonants.put("ㅊ", "C");
@@ -93,16 +114,16 @@ public class SearchService {
         for(int i=0;i<keyword.length();i++) {
             char ch = keyword.charAt(i);
             int ascii = (int)ch;
+            int nowType = findType(ascii);
 
             // 공백은 continue
             if(ascii == 32) continue;
 
             // 이전과 다른 유형의 char 일 경우, 공백 추가 (맨 처음은 제외)
-            if(prev != 0 && findType(ascii) != 0 && prev != findType(ascii)) ans.add(" ");
-            prev = findType(ascii);
+            if(prev != 0 && nowType != 0 && prev != nowType) ans.add(" ");
+            prev = nowType;
 
-            // ㄱ(12593) ~ ㅎ(12622)
-            if(ascii > 12592 && ascii < 12623) {
+            if(nowType == 4) {
                 // 한글 자음일 경우 Hashmap 값 가져오기
                 ans.add(consonants.get(Character.toString(ch)));
             } else {
