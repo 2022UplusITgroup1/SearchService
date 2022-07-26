@@ -34,6 +34,9 @@ public class PhoneDto {
     @JsonProperty("color")
     private String color;
 
+    @JsonProperty("colorHexCode")
+    private String colorHexCode;
+
     @JsonProperty("price")
     private Integer price;
 
