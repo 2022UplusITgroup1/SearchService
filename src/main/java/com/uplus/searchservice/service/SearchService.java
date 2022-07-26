@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.uplus.searchservice.controller.message.StatusMessage;
+import com.uplus.searchservice.dto.response.TypoCorrectResponseDto;
 import com.uplus.searchservice.entity.Dictionary;
 import com.uplus.searchservice.exception.NoAvailableItemException;
+import com.uplus.searchservice.feignclient.TypoCorrectClient;
 import com.uplus.searchservice.repository.DictionaryRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -33,7 +35,7 @@ public class SearchService {
     private final ProductServiceClient productServiceClient;
     private final DictionaryRepository dictionaryRepository;
     private final RedisTemplate<String, String> redisTemplate;
-
+    private final TypoCorrectClient typoCorrectClient;
     /**
      * 사전(dictionary)에 오타 수정 된 케이스가 있는지 확인
      */
@@ -161,5 +163,13 @@ public class SearchService {
             throw new RuntimeException(StatusMessage.DB_UPDATE_IS_ZERO);
         }
         return savedDictionary;
+    }
+
+    /**
+     * TypoCorrect API로부터 오타 수정된 결과를 받음
+     */
+    public TypoCorrectResponseDto getTypoCorrectString(String query){
+        TypoCorrectResponseDto typoCorrectResponseDto = typoCorrectClient.getCorrectString(query);
+        return typoCorrectResponseDto;
     }
 }
