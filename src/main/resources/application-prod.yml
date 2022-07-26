@@ -21,7 +21,7 @@ spring:
   cache:
     type: redis
   redis:
-    host: 10.100.50.27
+    host: 10.100.34.56
     port: 6379
 
 eureka:
