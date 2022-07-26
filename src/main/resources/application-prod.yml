@@ -1,3 +1,6 @@
+server:
+  port: 44421
+
 logging:
   level:
     root: debug
