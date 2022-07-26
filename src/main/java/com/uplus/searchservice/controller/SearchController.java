@@ -45,7 +45,7 @@ public class SearchController {
         for(String converts : convertedWords){
             //단어 길이 2이상일때만 검색
             if(converts.length() > 1){
-                Dictionary dictionaryWord = searchService.getCorrectWordInDB(converts);
+                Dictionary dictionaryWord = searchService.getCorrectWordInDB(converts.toUpperCase());
                 if (dictionaryWord != null)
                     keywordList.set(idx, dictionaryWord.getCorrectWord());
             }
@@ -54,8 +54,8 @@ public class SearchController {
 
         String keyword = String.join(" ", keywordList);
 
-        logger.debug("search query[" + query + "] -> keyword [" + keyword + "]");
-        List<PhoneDto> searchPhoneList = searchService.getSearchList(keyword);
+        logger.info("search query[" + query + "] -> keyword [" + keyword + "]");
+        List<PhoneDto> searchPhoneList = searchService.getSearchList(keyword.toUpperCase());
         if (searchPhoneList.isEmpty())
             return ResponseMessage.res(StatusCode.NO_CONTENT, StatusMessage.NOT_FOUND_SEARCH_PRODUCT);
 
