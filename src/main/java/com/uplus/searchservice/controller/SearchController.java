@@ -46,14 +46,20 @@ public class SearchController {
          */
         List<String> convertedWords = searchService.getConvertWord(query);
         String keyword = String.join(" ", convertedWords);
-        logger.debug("search query[" + query + "] -> keyword [" + keyword + "]");
+        logger.info("search query[" + query + "] -> keyword [" + keyword + "]");
 
+        Dictionary dictionaryWord = searchService.getCorrectWordInDB(query.toUpperCase());
+        if (dictionaryWord != null) {
+            List<PhoneDto> searchPhoneList = searchService.getSearchList(dictionaryWord.getCorrectWord());
+            if (!searchPhoneList.isEmpty())
+                return ResponseMessage.res(StatusCode.OK, StatusMessage.SUCCESS_FOUND_SEARCH_PRODUCT, searchPhoneList);
+        }
         /**
          * 오타변환 api 를 통해 오타를 수정한다.
          */
         TypoCorrectResponseDto typoCorrectResponseDto = searchService.getTypoCorrectString(keyword);
         if (!typoCorrectResponseDto.getQuery().isEmpty()) {
-            logger.debug("Typo correct result : " + typoCorrectResponseDto.getQuery());
+            logger.info("Typo correct result : " + typoCorrectResponseDto.getQuery());
             List<PhoneDto> searchPhoneList = searchService.getSearchList(typoCorrectResponseDto.getQuery());
             if (!searchPhoneList.isEmpty())
                 return ResponseMessage.res(StatusCode.OK, StatusMessage.SUCCESS_FOUND_SEARCH_PRODUCT, searchPhoneList);
@@ -64,7 +70,7 @@ public class SearchController {
         for(String converts : convertedWords){
             //단어 길이 2이상일때만 검색
             if(converts.length() > 1){
-                Dictionary dictionaryWord = searchService.getCorrectWordInDB(converts.toUpperCase());
+                dictionaryWord = searchService.getCorrectWordInDB(converts.toUpperCase());
                 if (dictionaryWord != null)
                     keywordList.set(idx, dictionaryWord.getCorrectWord());
             }
@@ -73,7 +79,7 @@ public class SearchController {
         }
 
         keyword = String.join(" ", keywordList);
-        logger.debug("search in db query[" + query + "] -> keyword [" + keyword + "]");
+        logger.info("search in db query[" + query + "] -> keyword [" + keyword + "]");
 
         List<PhoneDto> searchPhoneList = searchService.getSearchList(keyword);
         if (searchPhoneList.isEmpty())
