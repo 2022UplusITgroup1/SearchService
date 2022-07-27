@@ -53,7 +53,7 @@ public class SearchController {
         if (dictionaryWord != null) {
             List<PhoneDto> searchPhoneList = searchService.getSearchList(dictionaryWord.getCorrectWord());
             if (!searchPhoneList.isEmpty()) {
-                SearchResultDto searchResultDto = SearchResultDto.builder().searchPhoneList(searchPhoneList)
+                SearchResultDto searchResultDto = SearchResultDto.builder().searchResults(searchPhoneList)
                         .correctWord(dictionaryWord.getCorrectWord()).build();
                 return ResponseMessage.res(StatusCode.OK, StatusMessage.SUCCESS_FOUND_SEARCH_PRODUCT, searchResultDto);
             }
@@ -66,7 +66,7 @@ public class SearchController {
             logger.info("Typo correct result : " + typoCorrectResponseDto.getQuery());
             List<PhoneDto> searchPhoneList = searchService.getSearchList(typoCorrectResponseDto.getQuery());
             if (!searchPhoneList.isEmpty()) {
-                SearchResultDto searchResultDto = SearchResultDto.builder().searchPhoneList(searchPhoneList)
+                SearchResultDto searchResultDto = SearchResultDto.builder().searchResults(searchPhoneList)
                         .correctWord(typoCorrectResponseDto.getQuery()).build();
                 return ResponseMessage.res(StatusCode.OK, StatusMessage.SUCCESS_FOUND_SEARCH_PRODUCT, searchResultDto);
             }
@@ -92,7 +92,7 @@ public class SearchController {
         if (searchPhoneList.isEmpty())
             return ResponseMessage.res(StatusCode.NO_CONTENT, StatusMessage.NOT_FOUND_SEARCH_PRODUCT);
 
-        SearchResultDto searchResultDto = SearchResultDto.builder().searchPhoneList(searchPhoneList)
+        SearchResultDto searchResultDto = SearchResultDto.builder().searchResults(searchPhoneList)
                 .correctWord(keyword).build();
         return ResponseMessage.res(StatusCode.OK, StatusMessage.SUCCESS_FOUND_SEARCH_PRODUCT, searchResultDto);
     }
