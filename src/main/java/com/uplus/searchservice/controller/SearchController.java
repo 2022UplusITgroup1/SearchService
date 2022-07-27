@@ -3,6 +3,7 @@ package com.uplus.searchservice.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.uplus.searchservice.controller.response.SearchResultDto;
 import com.uplus.searchservice.dto.response.TypoCorrectResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,8 +52,11 @@ public class SearchController {
         Dictionary dictionaryWord = searchService.getCorrectWordInDB(query.toUpperCase());
         if (dictionaryWord != null) {
             List<PhoneDto> searchPhoneList = searchService.getSearchList(dictionaryWord.getCorrectWord());
-            if (!searchPhoneList.isEmpty())
-                return ResponseMessage.res(StatusCode.OK, StatusMessage.SUCCESS_FOUND_SEARCH_PRODUCT, searchPhoneList);
+            if (!searchPhoneList.isEmpty()) {
+                SearchResultDto searchResultDto = SearchResultDto.builder().searchPhoneList(searchPhoneList)
+                        .correctWord(dictionaryWord.getCorrectWord()).build();
+                return ResponseMessage.res(StatusCode.OK, StatusMessage.SUCCESS_FOUND_SEARCH_PRODUCT, searchResultDto);
+            }
         }
         /**
          * 오타변환 api 를 통해 오타를 수정한다.
@@ -61,8 +65,11 @@ public class SearchController {
         if (!typoCorrectResponseDto.getQuery().isEmpty()) {
             logger.info("Typo correct result : " + typoCorrectResponseDto.getQuery());
             List<PhoneDto> searchPhoneList = searchService.getSearchList(typoCorrectResponseDto.getQuery());
-            if (!searchPhoneList.isEmpty())
-                return ResponseMessage.res(StatusCode.OK, StatusMessage.SUCCESS_FOUND_SEARCH_PRODUCT, searchPhoneList);
+            if (!searchPhoneList.isEmpty()) {
+                SearchResultDto searchResultDto = SearchResultDto.builder().searchPhoneList(searchPhoneList)
+                        .correctWord(typoCorrectResponseDto.getQuery()).build();
+                return ResponseMessage.res(StatusCode.OK, StatusMessage.SUCCESS_FOUND_SEARCH_PRODUCT, searchResultDto);
+            }
         }
 
         List<String> keywordList = convertedWords;
@@ -85,6 +92,8 @@ public class SearchController {
         if (searchPhoneList.isEmpty())
             return ResponseMessage.res(StatusCode.NO_CONTENT, StatusMessage.NOT_FOUND_SEARCH_PRODUCT);
 
-        return ResponseMessage.res(StatusCode.OK, StatusMessage.SUCCESS_FOUND_SEARCH_PRODUCT, searchPhoneList);
+        SearchResultDto searchResultDto = SearchResultDto.builder().searchPhoneList(searchPhoneList)
+                .correctWord(keyword).build();
+        return ResponseMessage.res(StatusCode.OK, StatusMessage.SUCCESS_FOUND_SEARCH_PRODUCT, searchResultDto);
     }
 }
